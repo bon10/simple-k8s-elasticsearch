@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-pv
+  namespace: elasticsearch
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
+spec:
+  capacity:
+    storage: 12Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  hostPath:
+    path: "/mnt/disks/vol1/es-data"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-plugin-pv
+  namespace: elasticsearch
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
+spec:
+  capacity:
+    storage: 400Mi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  hostPath:
+    path: "/mnt/disks/vol1/es-plugin"
+
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: pv-claim-elasticsearch-plugin
+#  namespace: elasticsearch
+#spec:
+#  accessModes:
+#  - ReadWriteOnce
+#  storageClassName: local-storage
+#  resources:
+#    requests:
+#      storage: 400Mi
+
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: pv-claim-elasticsearch
+#  namespace: elasticsearch
+#spec:
+#  accessModes:
+#  - ReadWriteOnce
+#  storageClassName: local-storage
+#  resources:
+#    requests:
+#      storage: 12Gi
+

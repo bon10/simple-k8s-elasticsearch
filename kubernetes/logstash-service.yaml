@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: logstash
+  namespace: elasticsearch
+  labels:
+    component: logstash
+spec:
+  selector:
+    component: logstash
+  ports:
+  - protocol: TCP
+    name: beat
+    targetPort: beat
+    port: 5044
+    nodePort: 30014
+  type: NodePort

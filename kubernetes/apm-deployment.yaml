@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: elasticsearch
+  name: apm-server
+  labels:
+    component: apm-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     component: apm-server
+  template:
+    metadata:
+      labels:
+        component: apm-server
+    spec:
+      containers:
+      - name: apm-server
+        image: docker.elastic.co/apm/apm-server:7.3.0
+        env:
+        ports:
+        - containerPort: 8200
+          name: http

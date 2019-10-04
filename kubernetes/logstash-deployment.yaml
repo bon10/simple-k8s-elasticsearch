@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: logstash
+  namespace: elasticsearch
+  labels:
+    component: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     component: logstash
+  template:
+    metadata:
+      labels:
+        component: logstash
+    spec:
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.2.0
+        env:
+        #resources:
+        #  limits:
+        #    cpu: 1
+        #  requests:
+        #    cpu: 50m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        ports:
+        - containerPort: 5044
+          name: beat
+        volumeMounts:
+          - name: config-logstash
+            mountPath: /usr/share/logstash/config/logstash.yml
+            subPath: logstash.yml
+          - name: config-pipelines
+            mountPath: /usr/share/logstash/config/pipelines.yml
+            subPath: pipelines.yml
+          - name: logstash-pipeline-volume
+            mountPath: /usr/share/logstash/pipeline/logstash.conf
+            subPath: logstash.conf
+          - name: logstash-pattern-volume
+            mountPath: /usr/share/logstash/pipeline/patterns
+      volumes:
+      - name: config-logstash
+        configMap:
+          name: logstash-configmap
+          #items:
+          #  - key: logstash.yml
+          #    path: logstash.yml
+          #  - key: pipelines.yml
+          #    path: pipelines.yml
+      - name: config-pipelines
+        configMap:
+          name: logstash-configmap
+      - name: logstash-pipeline-volume
+        configMap:
+          name: logstash-configmap
+      #    items:
+      #      - key: logstash.conf
+      #        path: logstash.conf
+      - name: logstash-pattern-volume
+        configMap:
+          name: logstash-configmap
+          items:
+            - key: pattern.d
+              path: pattern.d

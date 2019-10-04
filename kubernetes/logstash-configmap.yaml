@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+  namespace: elasticsearch
+data:
+  logstash.conf: |
+    # all input will come from filebeat, no local logs
+    input {
+      beats {
+        port => 5044
+      }
+    }
+    filter {
+      ruby {
+        init => "require 'socket'"
+        code => "event.set('logstash-hostname', Socket.gethostname)"
+      }
+      mutate {
+        rename => { "message" => "source"}
+      }
+      # For Ruby
+      grok {
+        match => { "source" => "%{RUBY_LOGGER}" }
+        tag_on_failure => ["root_pattern_unmatch"]
+      }
+      mutate {
+        remove_tag => [ "non_uuid", "no_delayed_job" ]
+      }
+      # Delete for ANSI from logs
+      mutate {
+        gsub => [ "message", "\e\[[0-9]+m", "" ]
+      }
+      # SQL log
+      if [message] =~ /SQL.*/ {
+        grok {
+          patterns_dir => ["/usr/share/logstash/pipeline/patterns"]
+          match => { "message" => "%{SQL}"}
+          tag_on_failure => ["unmatch_sql"]
+          add_tag => "sql"
+        }
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => "http://elasticsearch.elasticsearch:9200"
+        index => "%{[fields][env]}-%{+YYYYMMdd}"
+        ilm_enabled => "true"
+        ilm_rollover_alias => "dev"
+      }
+    }
+  pattern.d: |
+    XML <\?xml.*
+    SQL SQL \(%{NUMBER:sql_time:float}ms\)  %{GREEDYDATA:sql}
+  pipelines.yml: |
+    - pipeline.id: main
+      path.config: "/usr/share/logstash/pipeline/logstash.conf"
+
