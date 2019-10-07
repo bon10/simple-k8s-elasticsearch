@@ -5,7 +5,7 @@ Suitable for development especially Ruby.
 
 ## Required
 - Kubernetes v1.14 later.
-- Space must be reserved for [LocalStorage](https://kubernetes.io/blog/2019/04/04/kubernetes-1.14-local-persistent-volumes-ga/) to use.
+- Space must be reserved for [Local Volume](https://kubernetes.io/blog/2019/04/04/kubernetes-1.14-local-persistent-volumes-ga/) to use.
 
 ```
 $ ssh k8s-node
@@ -23,13 +23,13 @@ $ ./create.sh
 
 ## Attributes
 Namespace: elasticsearch  
-StatefulSet: elasticsearch
-Deployment: logstash,kibana,apm-server
+StatefulSet: elasticsearch  
+Deployment: logstash,kibana,apm-server  
 
 Service:  
-  logstash:      Internal 5044 / NodePort 30014
-  elasticsearch: Internal 9200 / NodePort 31001
-  kibana:        Internal 5601 / NodePort 31000
+  logstash:      Internal 5044 / NodePort 30014  
+  elasticsearch: Internal 9200 / NodePort 31001  
+  kibana:        Internal 5601 / NodePort 31000  
 
 
 ## FYI
