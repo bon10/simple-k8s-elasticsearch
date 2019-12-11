@@ -29,8 +29,12 @@ data:
   apm-server.yml: |
     apm-server:
       host: "0.0.0.0:8200"
-      output.elasticsearch:
-        hosts: ["elasticsearch.elasticsearch:9200"]
+      rum:
+        enabled: true
+        allow_origins: ['*']
+    output.elasticsearch:
+      enabled: true
+      hosts: ["elasticsearch.elasticsearch:9200"]
       indices:
         - index: "apm-%{[observer.version]}-sourcemap"
           when.contains:
@@ -55,3 +59,12 @@ data:
         - index: "apm-%{[observer.version]}-onboarding-%{+yyyy.MM.dd}"
           when.contains:
             processor.event: "onboarding"
+
+    monitoring.enabled: true
+    monitoring.elasticsearch:
+      hosts: ["elasticsearch.elasticsearch:9200"]
+
+    kibana:
+      enabled: true
+      host: "kibana.elasticsearch:5601"
+

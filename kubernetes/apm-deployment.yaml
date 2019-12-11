@@ -22,3 +22,15 @@ spec:
         ports:
         - containerPort: 8200
           name: http
+        volumeMounts:
+        - name: apm-yml
+          mountPath: /usr/share/apm-server/apm-server.yml
+          subPath: apm-server.yml
+      volumes:
+        - name: apm-yml
+          configMap:
+            name: "es-configmap"
+            items:
+              - key: apm-server.yml
+                path: apm-server.yml
+
