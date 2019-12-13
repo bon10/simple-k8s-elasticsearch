@@ -32,39 +32,13 @@ data:
       rum:
         enabled: true
         allow_origins: ['*']
+      kibana:
+        enabled: true
+        host: "kibana.elasticsearch:5601"
     output.elasticsearch:
       enabled: true
       hosts: ["elasticsearch.elasticsearch:9200"]
-      indices:
-        - index: "apm-%{[observer.version]}-sourcemap"
-          when.contains:
-            processor.event: "sourcemap"
-
-        - index: "apm-%{[observer.version]}-error-%{+yyyy.MM.dd}"
-          when.contains:
-            processor.event: "error"
-
-        - index: "apm-%{[observer.version]}-transaction-%{+yyyy.MM.dd}"
-          when.contains:
-            processor.event: "transaction"
-
-        - index: "apm-%{[observer.version]}-span-%{+yyyy.MM.dd}"
-          when.contains:
-            processor.event: "span"
-
-        - index: "apm-%{[observer.version]}-metric-%{+yyyy.MM.dd}"
-          when.contains:
-            processor.event: "metric"
-
-        - index: "apm-%{[observer.version]}-onboarding-%{+yyyy.MM.dd}"
-          when.contains:
-            processor.event: "onboarding"
-
     monitoring.enabled: true
     monitoring.elasticsearch:
       hosts: ["elasticsearch.elasticsearch:9200"]
-
-    kibana:
-      enabled: true
-      host: "kibana.elasticsearch:5601"
 
